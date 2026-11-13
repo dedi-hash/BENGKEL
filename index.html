@@ -4,59 +4,109 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Peminjaman Alat Bengkel TI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#fff5f8;--surface:#ffffff;--ink:#4a2c3a;--muted:#8a6b7a;--line:#f5d5e0;--accent:#d6457a;--accent-2:#f48fb1;--accent-ink:#fff;--warn:#b3261e;--warn-bg:#fde7e4;--ok:#2e7d4f;--ok-bg:#e4f5ea;--shadow:0 6px 18px rgba(214,69,122,.12)}
+:root{--mist:#eef5ec;--paper:#fbfdfa;--ink:#16302a;--muted:#5d7568;--line:#d3e3d3;--pine:#1f4d3a;--deep:#143528;--leaf:#3f8f5f;--moss:#8cc79d;--bark:#7a5a3a;--warn:#b3261e;--warn-bg:#fde7e4;--soon:#8a5a00;--soon-bg:#fff0cc;--ok-bg:#e0f2e4;--shadow:0 10px 28px rgba(20,53,40,.12)}
 *{box-sizing:border-box}
-body{margin:0;color:var(--ink);font:16px/1.5 "Segoe UI",system-ui,sans-serif;background-color:var(--bg);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='%23f8c8d8' opacity='.55'%3E%3Ccircle cx='38' cy='30' r='6'/%3E%3Ccircle cx='32.5' cy='37.6' r='6'/%3E%3Ccircle cx='23.5' cy='34.7' r='6'/%3E%3Ccircle cx='23.5' cy='25.3' r='6'/%3E%3Ccircle cx='32.5' cy='22.4' r='6'/%3E%3Ccircle cx='98' cy='90' r='5'/%3E%3Ccircle cx='92.5' cy='97.6' r='5'/%3E%3Ccircle cx='83.5' cy='94.7' r='5'/%3E%3Ccircle cx='83.5' cy='85.3' r='5'/%3E%3Ccircle cx='92.5' cy='82.4' r='5'/%3E%3C/g%3E%3Ccircle cx='30' cy='30' r='4' fill='%23ffd966'/%3E%3Ccircle cx='90' cy='90' r='3.5' fill='%23ffd966'/%3E%3C/svg%3E")}
-main{max-width:920px;margin:0 auto;padding:28px 16px 48px}
-h1{font:700 1.9rem/1.2 Georgia,serif;margin:0 0 6px;text-align:center;color:var(--accent)}
-h1::before{content:"🌸 "}
-h1::after{content:" 🌷"}
-h2{font:700 1.15rem/1.3 Georgia,serif;margin:0 0 14px;color:var(--accent)}
-h2::before{content:"🌼 "}
-.sub{color:var(--muted);margin:0 0 26px;text-align:center}
-.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin-bottom:26px}
-.tool{background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--accent-2);border-radius:18px 18px 18px 4px;padding:16px;box-shadow:var(--shadow)}
-.tool b{display:block;font-size:1.05rem;color:var(--ink)}
-.tool b::before{content:"🌺 "}
-.tool .n{font:700 2.1rem/1.1 Georgia,serif;color:var(--accent)}
-.bar{height:8px;background:var(--line);border-radius:6px;margin-top:10px;overflow:hidden}
-.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent-2),var(--accent));border-radius:6px}
-.tool.habis{border-top-color:var(--warn)}
+body{margin:0;color:var(--ink);background:var(--mist);font:16px/1.55 "Nunito","Segoe UI",system-ui,sans-serif}
+h1,h2,.n,.loan strong,.av,.empty b{font-family:"Fraunces",Georgia,serif}
+
+/* Banner */
+.hero{background-color:var(--pine);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='44' viewBox='0 0 90 44'%3E%3Cg fill='%23143528'%3E%3Cpolygon points='20,0 36,30 4,30'/%3E%3Cpolygon points='20,12 40,44 0,44'/%3E%3Cpolygon points='64,8 76,32 52,32'/%3E%3Cpolygon points='64,18 82,44 46,44'/%3E%3C/g%3E%3C/svg%3E");background-repeat:repeat-x;background-position:bottom;padding:44px 16px 92px;text-align:center}
+.hero h1{margin:0 0 8px;color:#fff;font-weight:700;font-size:clamp(1.9rem,5.5vw,2.9rem);line-height:1.1;letter-spacing:-.01em}
+.sub{margin:0 auto;max-width:520px;color:#cfe8d6;font-size:1.05rem}
+
+main{max-width:960px;margin:-56px auto 0;padding:0 16px 48px;position:relative}
+
+/* Kartu stok (diagram pie) */
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));margin-bottom:28px}
+.tool{position:relative;display:flex;align-items:center;gap:20px;background:#fff;border-radius:18px;padding:20px;box-shadow:var(--shadow);border:1px solid var(--line)}
+.pie{flex:none;position:relative;display:grid;place-items:center;width:124px;height:124px;border-radius:50%;background:conic-gradient(var(--leaf) 0 var(--p),#e3b04b 0);box-shadow:0 0 0 4px #fff,0 0 0 5px var(--line)}
+.ico{width:66px;height:66px;border-radius:50%;background:#fff;color:var(--pine);display:grid;place-items:center;box-shadow:0 0 0 1px var(--line)}
+.ico svg{width:38px;height:38px}
+.tool.habis .ico{color:var(--warn)}
+.info{min-width:0}
+.tool b{display:block;font-weight:800;font-size:.95rem;color:var(--muted)}
+.tool .row{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-top:2px}
+.tool .n{font-weight:700;font-size:2.6rem;line-height:1;color:var(--pine)}
+.tool .of{color:var(--muted);font-size:.92rem}
+.leg{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:2px;font-size:.88rem;font-weight:700}
+.dot{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:8px;vertical-align:middle}
+.dot.ok{background:var(--leaf)}
+.dot.out{background:#e3b04b}
+.kurang{display:inline-block;white-space:nowrap;margin-top:10px;font-size:.82rem;font-weight:800;padding:3px 10px;border-radius:999px;background:#fff0cc;color:#8a5a00}
+.delta{position:absolute;top:10px;right:14px;font:700 1.5rem "Fraunces",Georgia,serif;pointer-events:none;opacity:0;animation:naik 2.6s ease-out forwards}
+.delta.neg{color:#b3261e}
+.delta.pos{color:#2d6a4f}
+.tool.flash{animation:kedip 1s ease-out}
+.tool.flash .n{animation:pop .5s ease-out}
+@keyframes naik{0%{opacity:0;transform:translateY(10px) scale(.7)}15%{opacity:1;transform:translateY(0) scale(1.15)}70%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-16px)}}
+@keyframes kedip{0%{box-shadow:0 0 0 4px rgba(227,176,75,.6)}100%{box-shadow:var(--shadow)}}
+@keyframes pop{0%{transform:scale(1.5)}100%{transform:scale(1)}}
 .tool.habis .n{color:var(--warn)}
-section{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:20px;margin-bottom:26px;box-shadow:var(--shadow)}
-form{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));align-items:end}
-label{display:grid;gap:4px;font-size:.9rem;color:var(--muted)}
-input,select{font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fffafc;color:var(--ink);width:100%;outline:none;transition:border-color .2s,box-shadow .2s}
-input:focus,select:focus{border-color:var(--accent-2);box-shadow:0 0 0 3px rgba(244,143,177,.3)}
-button{font:inherit;font-weight:600;padding:10px 16px;border:0;border-radius:999px;background:linear-gradient(135deg,var(--accent-2),var(--accent));color:var(--accent-ink);cursor:pointer;transition:transform .15s,box-shadow .15s}
-button:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(214,69,122,.35)}
-button.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent);padding:6px 12px}
-button.ghost:hover{background:var(--accent);color:#fff;box-shadow:none}
-.wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;min-width:560px}
-th,td{text-align:left;padding:11px 10px;border-bottom:1px solid var(--line)}
-th{font-size:.85rem;color:var(--accent);font-weight:700;background:#fff0f5}
-th:first-child{border-radius:12px 0 0 12px}
-th:last-child{border-radius:0 12px 12px 0}
-tbody tr:hover{background:#fff8fa}
-.badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:.82rem;font-weight:600}
-.badge.ok{background:var(--ok-bg);color:var(--ok)}
-.badge.late{background:var(--warn-bg);color:var(--warn)}
-.msg{margin:10px 0 0;min-height:1.4em;color:var(--warn);font-size:.9rem}
-.empty{color:var(--muted);padding:12px 0;text-align:center}
-main::after{content:"🌷 🌸 🌼 🌸 🌷";display:block;text-align:center;font-size:1.4rem;letter-spacing:6px;margin-top:8px}
+.tool.habis .pie{background:#e3b04b}
+
+/* Bagian */
+section{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);margin-bottom:28px;overflow:hidden}
+.sec-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:18px 24px;background:#f1f8ef;border-bottom:1px solid var(--line)}
+.sec-body{padding:22px 24px 24px}
+h2{margin:0;font-weight:600;font-size:1.4rem;color:var(--pine)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font-size:.85rem;font-weight:800;padding:4px 14px;border-radius:999px;background:var(--ok-bg);color:var(--pine)}
+.chip.late{background:var(--warn-bg);color:var(--warn)}
+
+/* Form */
+form{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));align-items:end}
+label{display:grid;gap:6px;font-size:.85rem;font-weight:800;color:var(--pine)}
+input,select{font:inherit;font-weight:600;height:48px;padding:0 14px;border:2px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);width:100%;outline:none;transition:border-color .2s,box-shadow .2s}
+input:focus,select:focus{border-color:var(--leaf);box-shadow:0 0 0 4px rgba(63,143,95,.2)}
+button{font:inherit;font-weight:800;height:48px;padding:0 20px;border:0;border-radius:12px;background:var(--pine);color:#fff;cursor:pointer;transition:background .2s,transform .15s}
+button:hover{background:var(--leaf);transform:translateY(-1px)}
+button:focus-visible{outline:3px solid var(--bark);outline-offset:2px}
+button.ghost{height:40px;background:transparent;color:var(--pine);border:2px solid var(--line);width:100%;padding:0 12px}
+button.ghost:hover{background:var(--pine);border-color:var(--pine);color:#fff;transform:none}
+.msg{margin:12px 0 0;min-height:1.4em;color:var(--warn);font-weight:700;font-size:.92rem}
+
+/* Kartu peminjaman */
+.loans{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(270px,1fr))}
+.loan{position:relative;background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:18px 18px 16px 24px;overflow:hidden;display:flex;flex-direction:column;gap:14px}
+.loan::before{content:"";position:absolute;left:0;top:0;bottom:0;width:8px;background:var(--moss)}
+.loan.soon::before{background:#e0a21a}
+.loan.late::before{background:var(--warn)}
+.loan.late{background:#fffafa;border-color:#f1c9c4}
+.who{display:flex;align-items:center;gap:12px}
+.av{flex:none;width:46px;height:46px;border-radius:14px;background:var(--pine);color:#fff;display:grid;place-items:center;font-weight:700;font-size:1.25rem}
+.loan.soon .av{background:#b9800d}
+.loan.late .av{background:var(--warn)}
+.who strong{display:block;font-weight:600;font-size:1.15rem;line-height:1.2;overflow-wrap:anywhere}
+.who span{font-size:.92rem;color:var(--muted);font-weight:600}
+.meta{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;border-top:2px dotted var(--line);padding-top:12px}
+.meta small{display:block;font-size:.78rem;color:var(--muted);font-weight:600}
+.meta .tgl{font-weight:800}
+.status{font-size:.85rem;font-weight:800;padding:5px 12px;border-radius:999px;background:var(--ok-bg);color:var(--pine);white-space:nowrap}
+.loan.soon .status{background:var(--soon-bg);color:var(--soon)}
+.loan.late .status{background:var(--warn-bg);color:var(--warn)}
+.empty{text-align:center;color:var(--muted);padding:30px 12px;border:2px dashed var(--line);border-radius:16px;font-weight:600}
+.empty b{display:block;color:var(--pine);font-weight:600;font-size:1.2rem;margin-bottom:4px}
+.foot{text-align:center;font-size:1.5rem;letter-spacing:8px}
+@media (max-width:520px){.sec-head,.sec-body{padding-left:16px;padding-right:16px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.delta{opacity:1}}
 </style>
 </head>
 <body>
-<main>
+<header class="hero">
 <h1>Inventaris Bengkel TI</h1>
 <p class="sub">Catat peminjaman, pantau keterlambatan, dan lihat ketersediaan alat saat ini.</p>
+</header>
 
+<main>
 <div class="grid" id="stok"></div>
 
 <section>
-<h2>Catat peminjaman</h2>
+<div class="sec-head"><h2>Catat peminjaman</h2></div>
+<div class="sec-body">
 <form id="f">
 <label>Nama peminjam<input id="nama" required maxlength="60" autocomplete="off"></label>
 <label>Alat<select id="alat"></select></label>
@@ -65,41 +115,69 @@ main::after{content:"🌷 🌸 🌼 🌸 🌷";display:block;text-align:center;f
 <button type="submit">Simpan peminjaman</button>
 </form>
 <p class="msg" id="msg" role="alert"></p>
+</div>
 </section>
 
 <section>
-<h2>Sedang dipinjam</h2>
-<div class="wrap" id="daftar"></div>
+<div class="sec-head"><h2>Sedang dipinjam</h2><div class="chips" id="ringkas"></div></div>
+<div class="sec-body" id="daftar"></div>
 </section>
+
+<div class="foot" aria-hidden="true">🌲🌳🌲🌲🌳🌲</div>
 </main>
 
 <script>
 var KEY="bengkel-ti-v1";
-var ALAT=[{id:"multimeter",nama:"Multimeter",total:12},{id:"crimping",nama:"Tang crimping",total:8},{id:"laptop",nama:"Laptop",total:10}];
-var pinjam=[];
+var ALAT=[{id:"multimeter",nama:"Multimeter",total:12,ikon:'<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="13" y="5" width="22" height="38" rx="4"/><rect x="17" y="10" width="14" height="8" rx="1.5"/><circle cx="24" cy="29" r="5"/><path d="M24 24v5"/><path d="M18 39h.01M24 39h.01M30 39h.01"/></svg>'},{id:"crimping",nama:"Tang crimping",total:8,ikon:'<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 24 19 8h10l-3 16"/><path d="M22 24 12 43M26 24l10 19"/><path d="M13.5 40l3-5.5M34.5 40l-3-5.5" stroke-width="5.5"/><circle cx="24" cy="24" r="2.4"/></svg>'},{id:"laptop",nama:"Laptop",total:10,ikon:'<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="30" height="21" rx="2.5"/><path d="M4 36h40l-2.5 5h-35z"/></svg>'}];
+var pinjam=[],lastChange=null;
 try{var s=localStorage.getItem(KEY);if(s)pinjam=JSON.parse(s)||[];}catch(e){}
 function simpan(){try{localStorage.setItem(KEY,JSON.stringify(pinjam));}catch(e){}}
 function esc(t){var d=document.createElement("div");d.textContent=t;return d.innerHTML;}
 function today(){var d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10);}
 function dipinjam(id){return pinjam.filter(function(p){return p.alat===id}).reduce(function(a,p){return a+p.jml},0);}
 function fmt(t){var p=t.split("-");return p[2]+"/"+p[1]+"/"+p[0];}
+function selisih(tempo){
+ var a=tempo.split("-"),b=today().split("-");
+ return Math.round((Date.UTC(+a[0],a[1]-1,+a[2])-Date.UTC(+b[0],b[1]-1,+b[2]))/86400000);
+}
 function render(){
  var h="",o="";
  ALAT.forEach(function(a){
-  var sisa=a.total-dipinjam(a.id);
-  h+='<div class="tool'+(sisa===0?' habis':'')+'"><b>'+a.nama+'</b><span class="n">'+sisa+'</span> tersedia dari '+a.total+'<div class="bar"><i style="width:'+(sisa/a.total*100)+'%"></i></div></div>';
+  var sisa=a.total-dipinjam(a.id),pinj=a.total-sisa,pc=Math.round(sisa/a.total*100);
+  var kurang=pinj>0?'<div class="kurang">&#9660; Berkurang '+pinj+'</div>':'';
+  var ch=lastChange&&lastChange.id===a.id?lastChange.delta:0;
+  var delta=ch?'<span class="delta '+(ch<0?'neg':'pos')+'">'+(ch<0?'&minus;':'+')+Math.abs(ch)+'</span>':'';
+  h+='<div class="tool'+(sisa===0?' habis':'')+(ch?' flash':'')+'"><div class="pie" style="--p:'+pc+'%" role="img" aria-label="'+sisa+' dari '+a.total+' tersedia"><div class="ico">'+a.ikon+'</div></div><div class="info"><b>'+a.nama+'</b><div class="row"><span class="n">'+sisa+'</span><span class="of">tersedia dari '+a.total+'</span></div><ul class="leg"><li><i class="dot ok"></i>Tersedia '+sisa+'</li><li><i class="dot out"></i>Dipinjam '+pinj+'</li></ul>'+kurang+'</div>'+delta+'</div>';
   o+='<option value="'+a.id+'">'+a.nama+' ('+sisa+' tersedia)</option>';
  });
+ lastChange=null;
  document.getElementById("stok").innerHTML=h;
  var sel=document.getElementById("alat"),cur=sel.value;sel.innerHTML=o;if(cur)sel.value=cur;
- var t=today(),d=document.getElementById("daftar");
- if(!pinjam.length){d.innerHTML='<p class="empty">Belum ada alat yang dipinjam. Semua alat ada di bengkel.</p>';return;}
- var rows=pinjam.slice().sort(function(a,b){return a.tempo<b.tempo?-1:1}).map(function(p){
+
+ var d=document.getElementById("daftar"),r=document.getElementById("ringkas");
+ if(!pinjam.length){
+  r.innerHTML="";
+  d.innerHTML='<div class="empty"><b>Semua alat ada di bengkel</b>Peminjaman yang Anda catat akan muncul di sini.</div>';
+  return;
+ }
+ var telat=pinjam.filter(function(p){return selisih(p.tempo)<0}).length;
+ r.innerHTML='<span class="chip">'+pinjam.length+' peminjaman</span>'+(telat?'<span class="chip late">'+telat+' terlambat</span>':'');
+
+ var cards=pinjam.slice().sort(function(a,b){return a.tempo<b.tempo?-1:1}).map(function(p){
   var a=ALAT.filter(function(x){return x.id===p.alat})[0];
-  var late=p.tempo<t;
-  return '<tr><td>'+esc(p.nama)+'</td><td>'+a.nama+'</td><td>'+p.jml+'</td><td>'+fmt(p.tempo)+'</td><td><span class="badge '+(late?'late':'ok')+'">'+(late?'Terlambat':'Dipinjam')+'</span></td><td><button class="ghost" data-id="'+p.id+'">Tandai kembali</button></td></tr>';
+  var s=selisih(p.tempo),cls="",label;
+  if(s<0){cls=" late";label="Terlambat "+(-s)+" hari";}
+  else if(s===0){cls=" soon";label="Kembali hari ini";}
+  else if(s<=2){cls=" soon";label=s+" hari lagi";}
+  else{label=s+" hari lagi";}
+  var ini=esc((p.nama.charAt(0)||"?").toUpperCase());
+  return '<article class="loan'+cls+'">'+
+   '<div class="who"><div class="av" aria-hidden="true">'+ini+'</div><div><strong>'+esc(p.nama)+'</strong><span>'+p.jml+' &times; '+a.nama+'</span></div></div>'+
+   '<div class="meta"><div><small>Batas kembali</small><span class="tgl">'+fmt(p.tempo)+'</span></div><span class="status">'+label+'</span></div>'+
+   '<button class="ghost" data-id="'+p.id+'">Tandai kembali</button>'+
+  '</article>';
  }).join("");
- d.innerHTML='<table><thead><tr><th>Peminjam</th><th>Alat</th><th>Jumlah</th><th>Batas kembali</th><th>Status</th><th></th></tr></thead><tbody>'+rows+'</tbody></table>';
+ d.innerHTML='<div class="loans">'+cards+'</div>';
 }
 document.getElementById("tempo").value=today();
 document.getElementById("tempo").min=today();
@@ -110,14 +188,16 @@ document.getElementById("f").addEventListener("submit",function(e){
  if(jml>sisa){m.textContent="Stok "+a.nama+" tinggal "+sisa+". Kurangi jumlah pinjaman.";return;}
  m.textContent="";
  pinjam.push({id:Date.now()+"",nama:document.getElementById("nama").value.trim(),alat:id,jml:jml,tempo:document.getElementById("tempo").value});
+ lastChange={id:id,delta:-jml};
  simpan();document.getElementById("nama").value="";document.getElementById("jml").value=1;render();
 });
 document.getElementById("daftar").addEventListener("click",function(e){
  var id=e.target.getAttribute&&e.target.getAttribute("data-id");if(!id)return;
+ var item=pinjam.filter(function(p){return p.id===id})[0];
+ if(item)lastChange={id:item.alat,delta:item.jml};
  pinjam=pinjam.filter(function(p){return p.id!==id});simpan();render();
 });
 render();
 </script>
 </body>
 </html>
-
