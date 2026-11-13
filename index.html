@@ -1,9 +1,123 @@
-<!DOCTYPE html>
-<h1>Inventaris Bengkel TI</h1>
-<p>SMK Negeri 1</p>
+Petunjuk dari tangkapan layar Anda: judul tab tertulis `dedi-hash.github.io/BENGKE...` dengan ikon globe, bukan "Peminjaman Alat Bengkel TI". File saya punya judul tab itu, jadi yang tampil di GitHub Pages **bukan file saya**. Kemungkinan besar file yang terupload kosong atau salah.
 
-<ul>
-  <li>Multimeter: 12 unit</li>
-  <li>Tang crimping: 8 unit</li>
-</ul>
+Cara paling aman adalah menempel kodenya langsung ke VS Code:
+
+1. Di folder repo, buat atau buka file bernama persis **`index.html`**.
+2. Hapus semua isinya, tempel kode di bawah, lalu tekan **Ctrl+S**. Titik putih di tab VS Code harus hilang.
+3. Commit dan push: `git add .`, `git commit -m "update"`, `git push`.
+4. Tunggu 1-2 menit, lalu buka halaman dan tekan **Ctrl+F5**.
+
+Sebelum push, klik dua kali `index.html` di File Explorer. Kalau terbuka dengan benar di browser, kodenya sudah beres dan sisa masalahnya hanya di upload.
+
+```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Peminjaman Alat Bengkel TI</title>
+<style>
+:root{--bg:#f3f1ec;--surface:#fff;--ink:#1d2a2e;--muted:#5d6b70;--line:#d9d5cb;--accent:#0f6b6e;--accent-ink:#fff;--warn:#b3261e;--warn-bg:#fbe9e7;--ok:#2e6b3a;--ok-bg:#e6f2e8}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Segoe UI",system-ui,sans-serif}
+main{max-width:920px;margin:0 auto;padding:24px 16px 48px}
+h1{font:700 1.7rem/1.2 Georgia,serif;margin:0 0 4px}
+h2{font:700 1.1rem/1.3 Georgia,serif;margin:0 0 12px}
+.sub{color:var(--muted);margin:0 0 24px}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin-bottom:24px}
+.tool{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px}
+.tool b{display:block;font-size:1.05rem}
+.tool .n{font:700 2rem/1.1 Georgia,serif}
+.bar{height:6px;background:var(--line);border-radius:3px;margin-top:8px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent)}
+.tool.habis .n{color:var(--warn)}
+section{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;margin-bottom:24px}
+form{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));align-items:end}
+label{display:grid;gap:4px;font-size:.9rem;color:var(--muted)}
+input,select{font:inherit;padding:9px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);width:100%}
+button{font:inherit;font-weight:600;padding:9px 14px;border:0;border-radius:6px;background:var(--accent);color:var(--accent-ink);cursor:pointer}
+button.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent);padding:6px 10px}
+.wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:560px}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line)}
+th{font-size:.85rem;color:var(--muted);font-weight:600}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.82rem;font-weight:600}
+.badge.ok{background:var(--ok-bg);color:var(--ok)}
+.badge.late{background:var(--warn-bg);color:var(--warn)}
+.msg{margin:10px 0 0;min-height:1.4em;color:var(--warn);font-size:.9rem}
+.empty{color:var(--muted);padding:12px 0}
+</style>
+</head>
+<body>
+<main>
+<h1>Inventaris Bengkel TI</h1>
+<p class="sub">Catat peminjaman, pantau keterlambatan, dan lihat ketersediaan alat saat ini.</p>
+
+<div class="grid" id="stok"></div>
+
+<section>
+<h2>Catat peminjaman</h2>
+<form id="f">
+<label>Nama peminjam<input id="nama" required maxlength="60" autocomplete="off"></label>
+<label>Alat<select id="alat"></select></label>
+<label>Jumlah<input id="jml" type="number" min="1" value="1" required></label>
+<label>Batas kembali<input id="tempo" type="date" required></label>
+<button type="submit">Simpan peminjaman</button>
+</form>
+<p class="msg" id="msg" role="alert"></p>
+</section>
+
+<section>
+<h2>Sedang dipinjam</h2>
+<div class="wrap" id="daftar"></div>
+</section>
+</main>
+
+<script>
+var KEY="bengkel-ti-v1";
+var ALAT=[{id:"multimeter",nama:"Multimeter",total:12},{id:"crimping",nama:"Tang crimping",total:8},{id:"laptop",nama:"Laptop",total:10}];
+var pinjam=[];
+try{var s=localStorage.getItem(KEY);if(s)pinjam=JSON.parse(s)||[];}catch(e){}
+function simpan(){try{localStorage.setItem(KEY,JSON.stringify(pinjam));}catch(e){}}
+function esc(t){var d=document.createElement("div");d.textContent=t;return d.innerHTML;}
+function today(){var d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10);}
+function dipinjam(id){return pinjam.filter(function(p){return p.alat===id}).reduce(function(a,p){return a+p.jml},0);}
+function fmt(t){var p=t.split("-");return p[2]+"/"+p[1]+"/"+p[0];}
+function render(){
+ var h="",o="";
+ ALAT.forEach(function(a){
+  var sisa=a.total-dipinjam(a.id);
+  h+='<div class="tool'+(sisa===0?' habis':'')+'"><b>'+a.nama+'</b><span class="n">'+sisa+'</span> tersedia dari '+a.total+'<div class="bar"><i style="width:'+(sisa/a.total*100)+'%"></i></div></div>';
+  o+='<option value="'+a.id+'">'+a.nama+' ('+sisa+' tersedia)</option>';
+ });
+ document.getElementById("stok").innerHTML=h;
+ var sel=document.getElementById("alat"),cur=sel.value;sel.innerHTML=o;if(cur)sel.value=cur;
+ var t=today(),d=document.getElementById("daftar");
+ if(!pinjam.length){d.innerHTML='<p class="empty">Belum ada alat yang dipinjam. Semua alat ada di bengkel.</p>';return;}
+ var rows=pinjam.slice().sort(function(a,b){return a.tempo<b.tempo?-1:1}).map(function(p){
+  var a=ALAT.filter(function(x){return x.id===p.alat})[0];
+  var late=p.tempo<t;
+  return '<tr><td>'+esc(p.nama)+'</td><td>'+a.nama+'</td><td>'+p.jml+'</td><td>'+fmt(p.tempo)+'</td><td><span class="badge '+(late?'late':'ok')+'">'+(late?'Terlambat':'Dipinjam')+'</span></td><td><button class="ghost" data-id="'+p.id+'">Tandai kembali</button></td></tr>';
+ }).join("");
+ d.innerHTML='<table><thead><tr><th>Peminjam</th><th>Alat</th><th>Jumlah</th><th>Batas kembali</th><th>Status</th><th></th></tr></thead><tbody>'+rows+'</tbody></table>';
+}
+document.getElementById("tempo").value=today();
+document.getElementById("tempo").min=today();
+document.getElementById("f").addEventListener("submit",function(e){
+ e.preventDefault();
+ var id=document.getElementById("alat").value,jml=parseInt(document.getElementById("jml").value,10),m=document.getElementById("msg");
+ var a=ALAT.filter(function(x){return x.id===id})[0],sisa=a.total-dipinjam(id);
+ if(jml>sisa){m.textContent="Stok "+a.nama+" tinggal "+sisa+". Kurangi jumlah pinjaman.";return;}
+ m.textContent="";
+ pinjam.push({id:Date.now()+"",nama:document.getElementById("nama").value.trim(),alat:id,jml:jml,tempo:document.getElementById("tempo").value});
+ simpan();document.getElementById("nama").value="";document.getElementById("jml").value=1;render();
+});
+document.getElementById("daftar").addEventListener("click",function(e){
+ var id=e.target.getAttribute&&e.target.getAttribute("data-id");if(!id)return;
+ pinjam=pinjam.filter(function(p){return p.id!==id});simpan();render();
+});
+render();
+</script>
+</body>
 </html>
+```
